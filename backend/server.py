@@ -54,8 +54,8 @@ class ChatSession(BaseModel):
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class ChatRequest(BaseModel):
-    message: str
-    session_id: Optional[str] = None
+    message: str = Field(min_length=1, max_length=10000)
+    session_id: Optional[str] = Field(default=None, min_length=1, max_length=100)
 
 class ChatResponse(BaseModel):
     session_id: str
@@ -213,9 +213,11 @@ async def chat(request: ChatRequest):
             timestamp=datetime.now(timezone.utc)
         )
     
-    except Exception as e:
-        logger.error(f"Error in chat endpoint: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+    except HTTPException:
+        raise
+    except Exception:
+        logger.exception("Error in chat endpoint")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 @api_router.delete("/chat/sessions/{session_id}")
 async def delete_chat_session(session_id: str):
@@ -230,9 +232,9 @@ app.include_router(api_router)
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=[o.strip() for o in os.environ.get("CORS_ORIGINS", "http://localhost:8501").split(",") if o.strip()],
+    allow_methods=["GET", "POST", "DELETE"],
+    allow_headers=["Content-Type"],
 )
 
 # Configure logging
