@@ -559,7 +559,7 @@ cd ai-chatbot
 
 ### 9.3 Backend Setup
 ```bash
-cd /app/backend
+cd backend
 pip install -r requirements.txt
 ```
 
@@ -573,15 +573,15 @@ EMERGENT_LLM_KEY=YOUR_EMERGENT_LLM_KEY
 
 Start backend:
 ```bash
-cd /app/backend
+cd backend
 uvicorn server:app --host 0.0.0.0 --port 8001 --reload
 ```
 
 ### 9.4 Frontend Setup
 ```bash
-pip install -r /app/requirements_streamlit.txt
+pip install -r ./requirements_streamlit.txt
 export BACKEND_URL=http://localhost:8001
-streamlit run /app/streamlit_app.py --server.port 8501
+streamlit run ./streamlit_app.py --server.port 8501
 ```
 
 ### 9.5 Access Application
@@ -892,7 +892,7 @@ Building this AI chatbot provided hands-on experience with cutting-edge AI techn
 
 ### 15.1 Project File Structure
 ```
-/app/
+./
 ├── backend/
 │   ├── server.py              # FastAPI application
 │   ├── requirements.txt       # Python dependencies
@@ -907,27 +907,27 @@ Building this AI chatbot provided hands-on experience with cutting-edge AI techn
 ### 15.2 Screenshots
 
 #### Screenshot 1: Home Screen
-![Home Screen](https://github.com/Nullkernel/AI_Chatbot/blob/main/screenshots/screenshot_home.jpeg)
+![Home Screen](https://github.com/amalbijoy/AI_Chatbotblob/main/screenshots/screenshot_home.jpeg)
 - Clean interface with gradient header
 - "New Chat" button prominent in sidebar
 - Welcome message prompts user to start
 
 #### Screenshot 2: Active Chat Session
-![Chat Session](https://github.com/Nullkernel/AI_Chatbot/blob/main/screenshots/screenshot_chat.jpeg)
+![Chat Session](https://github.com/amalbijoy/AI_Chatbotblob/main/screenshots/screenshot_chat.jpeg)
 - User message in left column with avatar
 - AI response in right column with avatar
 - Timestamps for each message
 - Chat input at bottom
 
 #### Screenshot 3: Context Memory Demonstration
-![Context Memory](https://github.com/Nullkernel/AI_Chatbot/blob/main/screenshots/screenshot_context.jpeg)
+![Context Memory](https://github.com/amalbijoy/AI_Chatbotblob/main/screenshots/screenshot_context.jpeg)
 - Follow-up question references previous message
 - AI correctly recalls earlier context
 - Natural conversation flow
 - Timestamps show real-time responses
 
 #### Screenshot 4: Multiple Sessions
-![Session Management](https://github.com/Nullkernel/AI_Chatbot/blob/main/screenshots/screenshot_sessions.jpeg)
+![Session Management](https://github.com/amalbijoy/AI_Chatbotblob/main/screenshots/screenshot_sessions.jpeg)
 - Multiple chat sessions in sidebar
 - Current session highlighted
 - Delete button for each session
@@ -970,7 +970,7 @@ def send_message(message, session_id=None):
 # Backend Configuration
 MONGO_URL=mongodb://localhost:27017
 DB_NAME=test_database
-CORS_ORIGINS=*
+CORS_ORIGINS=http://localhost:8501
 EMERGENT_LLM_KEY=YOUR_EMERGENT_LLM_KEY
 
 # Frontend Configuration
