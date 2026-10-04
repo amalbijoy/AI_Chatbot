@@ -1,63 +1,66 @@
-# AI Chatbot Application
+# AI Chatbot
 
-A full-stack AI chatbot application powered by Claude Sonnet 4.5, built with FastAPI, Streamlit, and MongoDB.
+> Full-stack learning/prototype application combining FastAPI, Streamlit, MongoDB, and Anthropic Claude Sonnet 4.5.
+
+## Overview
+
+The application provides multi-turn chat sessions with persistent message history.
+
+The current implementation uses the model identifier:
+
+```text
+anthropic / claude-sonnet-4-5-20250929
+```
+
+The model is accessed through the `emergentintegrations` library.
 
 ## Features
 
-- Real-time AI conversations using Claude Sonnet 4.5
-- Multi-turn conversation with context memory
-- Chat history persistence in MongoDB
-- Multiple chat session management
-- Streamlit-based chat interface
-- RESTful API with FastAPI
+- Create, list, and delete chat sessions
+- Persist sessions and messages in MongoDB
+- Multi-turn context handling
+- Streamlit chat interface
+- FastAPI backend
+- JSON API for chat operations
+- Input-size validation for chat requests
+- Explicit CORS configuration through an environment variable
 
-## System Architecture
+## Architecture
 
-### Backend — FastAPI
-- RESTful API endpoints for chat operations
-- MongoDB integration for persistence
-- Claude Sonnet 4.5 integration through the `emergentintegrations` library
-- Async operations for API handling
+```text
+Streamlit
+    │
+    ▼
+FastAPI
+    │
+    ├── MongoDB
+    │     ├── chat_sessions
+    │     └── chat_messages
+    │
+    └── emergentintegrations
+            │
+            ▼
+        Claude Sonnet 4.5
+```
 
-### Frontend — Streamlit
-- Interactive chat interface
-- Session management sidebar
-- Real-time message display
-- Chat history navigation
+For chat requests, the backend loads recent stored messages for the selected session and includes the latest context in the model prompt. Session records and message records are then persisted back to MongoDB.
 
-### Database — MongoDB
-- `chat_sessions`: Stores chat session metadata
-- `chat_messages`: Stores messages associated with sessions
-
-## Technology Stack
-
-- **Backend:** FastAPI, Python 3.9+
-- **Frontend:** Streamlit
-- **Database:** MongoDB
-- **AI Model:** Claude Sonnet 4.5
-- **LLM Integration:** `emergentintegrations`
-
-## Installation & Setup
-
-### Prerequisites
+## Requirements
 
 - Python 3.9+
-- MongoDB running on localhost:27017
-- Internet connection for model API calls
+- MongoDB reachable from the backend
+- Internet access for the model API and, when applicable, dependency installation
 
-### Backend Setup
+## Setup
 
-1. Navigate to the backend directory:
+### 1. Backend
+
 ```bash
 cd backend
+python -m pip install -r requirements.txt
 ```
 
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-3. Configure environment variables in `backend/.env`:
+Create a local `backend/.env` file from the example:
 
 ```env
 MONGO_URL=mongodb://localhost:27017
@@ -66,121 +69,91 @@ CORS_ORIGINS=http://localhost:8501
 EMERGENT_LLM_KEY=YOUR_EMERGENT_LLM_KEY
 ```
 
-> **Security:** Never commit real API keys or other credentials to Git. Store secrets only in your local `.env` file or a proper secrets manager.
+Start FastAPI:
 
-4. Start the FastAPI server:
 ```bash
 uvicorn server:app --host 0.0.0.0 --port 8001 --reload
 ```
 
-The backend API will be available at `http://localhost:8001`.
+The API will be available at `http://localhost:8001`.
 
-### Streamlit Frontend Setup
+### 2. Streamlit frontend
 
-1. Install Streamlit dependencies:
+From the repository root:
+
 ```bash
-pip install -r requirements_streamlit.txt
-```
-
-2. Set the backend URL:
-```bash
-export BACKEND_URL=http://localhost:8001
-```
-
-3. Run the Streamlit app:
-```bash
+python -m pip install -r requirements_streamlit.txt
 streamlit run streamlit_app.py --server.port 8501
 ```
 
-The Streamlit UI will be available at `http://localhost:8501`.
+The UI will be available at `http://localhost:8501`.
 
-## API Endpoints
+## API
 
-### Chat Endpoints
+All application routes are under `/api`.
 
-- `POST /api/chat/sessions` — Create a new chat session
-- `GET /api/chat/sessions` — Get all chat sessions
-- `GET /api/chat/sessions/{session_id}/messages` — Get messages for a session
-- `POST /api/chat` — Send a message and get an AI response
-- `DELETE /api/chat/sessions/{session_id}` — Delete a chat session
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/api/` | Health-style root response |
+| POST | `/api/chat/sessions` | Create a chat session |
+| GET | `/api/chat/sessions` | List sessions |
+| GET | `/api/chat/sessions/{session_id}/messages` | List messages for a session |
+| POST | `/api/chat` | Send a message and receive an AI response |
+| DELETE | `/api/chat/sessions/{session_id}` | Delete a session and its messages |
 
-### Example API Usage
+Example:
 
 ```bash
-# Create a new session
-curl -X POST http://localhost:8001/api/chat/sessions
-
-# Send a message
-curl -X POST http://localhost:8001/api/chat \
-  -H "Content-Type: application/json" \
-  -d '{"message":"Hello, how are you?","session_id":"your-session-id"}'
+curl -X POST http://localhost:8001/api/chat   -H "Content-Type: application/json"   -d '{"message":"Hello!","session_id":"your-session-id"}'
 ```
 
-## Usage
+## Security and scope
 
-1. Start the backend server.
-2. Start the Streamlit frontend.
-3. Open `http://localhost:8501`.
-4. Click **New Chat** to start a conversation.
-5. Type a message and press Enter.
-6. The AI responds using Claude Sonnet 4.5.
-7. Switch between chats using the sidebar.
+This is a **learning/prototype application**, not a hardened multi-tenant service.
 
-## Project Structure
+Current security-related behavior includes:
+
+- API credentials are loaded from environment variables
+- Real secrets are excluded from the current source tree
+- CORS defaults to the local Streamlit origin and can be overridden explicitly
+- Chat input length is bounded
+- Unexpected backend failures are logged while the API returns a generic error
+
+Important limitations remain:
+
+- There is no user authentication or authorization
+- Chat sessions are not bound to a user identity
+- There is no application-level rate limiting
+- The database connection is configured for the deployment environment rather than secured by this repository
+- A credential that was previously committed to Git history must still be considered compromised until it is rotated and historical exposure is removed
+
+See [SECURITY.md](SECURITY.md) for the security checklist.
+
+## Testing
+
+The repository includes a GitHub Actions workflow that performs Python compilation and checks the current tree for the previously exposed credential pattern.
+
+Manual API verification can be performed with `curl` against the running backend.
+
+This repository does not currently claim a comprehensive end-to-end integration test suite.
+
+## Project structure
 
 ```text
 AI_Chatbot/
 ├── backend/
 │   ├── server.py
 │   ├── requirements.txt
-│   └── .env
+│   └── .env.example
 ├── streamlit_app.py
 ├── requirements_streamlit.txt
+├── SECURITY.md
+├── LICENSE
 └── README.md
 ```
 
-## Design Decisions
+The local `backend/.env` file is configuration, not source-controlled project content.
 
-1. **FastAPI** — provides async support and automatic API documentation.
-2. **Streamlit** — keeps the frontend simple and fast to iterate on.
-3. **MongoDB** — provides flexible persistence for sessions and messages.
-4. **Claude Sonnet 4.5** — provides the conversational model used by the application.
-5. **Session-based architecture** — keeps independent conversations isolated from one another.
-6. **LLM integration layer** — keeps model-provider access behind a reusable integration library.
+## License
 
-## Testing
-
-Test the backend API with:
-
-```bash
-curl http://localhost:8001/api/
-```
-
-Or create a test session and send a message:
-
-```bash
-curl -X POST http://localhost:8001/api/chat \
-  -H "Content-Type: application/json" \
-  -d '{"message":"Hello!"}'
-```
-
-## Troubleshooting
-
-- **MongoDB connection error:** Ensure MongoDB is running on localhost:27017.
-- **API key error:** Set `EMERGENT_LLM_KEY` in `backend/.env` using your own key.
-- **CORS issues:** Configure `CORS_ORIGINS` appropriately for your environment.
-- **Port already in use:** Change ports if 8001 or 8501 are occupied.
-
----
-
-
-## Security
-
-- API credentials belong in environment variables and are never part of the repository.
-- The default local CORS policy targets the Streamlit frontend; configure explicit origins for deployment.
-- Chat requests are bounded by input-length validation.
-- Backend failures return generic client messages while detailed exceptions are logged server-side.
-
-## Current scope
-
-This is a learning/prototype application. It demonstrates LLM integration, persistence, API design, and multi-turn context management; it is not presented as a hardened multi-tenant production service.
+See [LICENSE](LICENSE).
