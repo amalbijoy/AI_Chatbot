@@ -3,13 +3,13 @@
 **Student Name:** Amal Bijoy  
 **Project Title:** AI Chatbot Using Claude Sonnet 4.5  
 **Date:** February 5, 2026  
-**GitHub Repository:** [Repository](https://github.com/Nullkernel/AI_Chatbot/)
+**GitHub Repository:** [AI_Chatbot](https://github.com/amalbijoy/AI_Chatbot)
 
 ---
 
 ## Executive Summary
 
-This project implements a full-stack AI chatbot application powered by Claude Sonnet 4.5, demonstrating modern software engineering practices and AI integration. The system features a FastAPI backend, Streamlit frontend, MongoDB database, and real-time conversational AI capabilities with persistent chat history and multi-turn context memory.
+This project implements a full-stack AI chatbot application powered by Claude Sonnet 4.5, demonstrating modern software engineering practices and AI integration. The system features a FastAPI backend, Streamlit frontend, MongoDB database, and conversational AI capabilities with persistent chat history and multi-turn context memory.
 
 ---
 
@@ -487,7 +487,7 @@ Comprehensive testing was performed using:
 
 ### 8.2 Test Results
 
-**Backend Tests (100% Pass Rate):**
+**Backend verification:**
 - API health check: ✓
 - Create session: ✓
 - Get sessions: ✓
@@ -496,7 +496,7 @@ Comprehensive testing was performed using:
 - MongoDB persistence: ✓
 - Session deletion: ✓
 
-**Frontend Tests (100% Pass Rate):**
+**Frontend verification:**
 - UI loading: ✓
 - New chat creation: ✓
 - Message sending: ✓
@@ -504,17 +504,15 @@ Comprehensive testing was performed using:
 - Session navigation: ✓
 - Delete functionality: ✓
 
-**Integration Tests (100% Pass Rate):**
+**Integration verification:**
 - Claude API integration: ✓
 - Multi-turn conversations: ✓
 - Session persistence: ✓
 - Context memory across sessions: ✓
 
 ### 8.3 Test Coverage
-- Backend: 100% of endpoints tested
-- Frontend: 95% of UI components tested
-- Integration: 100% of critical flows tested
-- Overall: 98% test success rate
+- Endpoint and integration tests were run during development; see the test scripts committed with the project.
+- Do not treat historical preview-environment results in this document as a current CI guarantee.
 
 ### 8.4 Sample Test Cases
 
@@ -565,12 +563,12 @@ cd /app/backend
 pip install -r requirements.txt
 ```
 
-Environment variables (already configured in `.env`):
+Example environment variables (create a local `.env`; never commit real credentials):
 ```env
 MONGO_URL=mongodb://localhost:27017
 DB_NAME=test_database
-CORS_ORIGINS=*
-EMERGENT_LLM_KEY=sk-emergent-7F539F03e27F977149
+CORS_ORIGINS=http://localhost:8501
+EMERGENT_LLM_KEY=YOUR_EMERGENT_LLM_KEY
 ```
 
 Start backend:
@@ -973,7 +971,7 @@ def send_message(message, session_id=None):
 MONGO_URL=mongodb://localhost:27017
 DB_NAME=test_database
 CORS_ORIGINS=*
-EMERGENT_LLM_KEY=sk-emergent-7F539F03e27F977149
+EMERGENT_LLM_KEY=YOUR_EMERGENT_LLM_KEY
 
 # Frontend Configuration
 BACKEND_URL=http://localhost:8001
