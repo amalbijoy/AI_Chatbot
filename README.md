@@ -172,3 +172,15 @@ curl -X POST http://localhost:8001/api/chat \
 - **Port already in use:** Change ports if 8001 or 8501 are occupied.
 
 ---
+
+
+## Security
+
+- API credentials belong in environment variables and are never part of the repository.
+- The default local CORS policy targets the Streamlit frontend; configure explicit origins for deployment.
+- Chat requests are bounded by input-length validation.
+- Backend failures return generic client messages while detailed exceptions are logged server-side.
+
+## Current scope
+
+This is a learning/prototype application. It demonstrates LLM integration, persistence, API design, and multi-turn context management; it is not presented as a hardened multi-tenant production service.
