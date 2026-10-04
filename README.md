@@ -62,7 +62,7 @@ pip install -r requirements.txt
 ```env
 MONGO_URL=mongodb://localhost:27017
 DB_NAME=test_database
-CORS_ORIGINS=*
+CORS_ORIGINS=http://localhost:8501
 EMERGENT_LLM_KEY=YOUR_EMERGENT_LLM_KEY
 ```
 
