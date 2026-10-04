@@ -170,3 +170,5 @@ curl -X POST http://localhost:8001/api/chat \
 - **API key error:** Set `EMERGENT_LLM_KEY` in `backend/.env` using your own key.
 - **CORS issues:** Configure `CORS_ORIGINS` appropriately for your environment.
 - **Port already in use:** Change ports if 8001 or 8501 are occupied.
+
+---
